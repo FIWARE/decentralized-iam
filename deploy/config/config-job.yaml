@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: did-credential-registration
+  labels:
+    app.kubernetes.io/instance: iam
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: registration-task
+        image: curlimages/curl:latest 
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "--- 1. Fetching and exporting DID variable ---"
+            export $(curl -s -f -X GET http://did-helper.127.0.0.1.nip.io/did-material/did.env)
+            
+            if [ -z "$DID" ]; then
+              echo "ERROR: DID variable not set. Exiting."
+              exit 1
+            fi
+            echo "DID=${DID}"
+
+            echo "--- 2. Registering UserCredential ---"
+            curl -s -f -v -X 'POST' \
+              'http://til.127.0.0.1.nip.io/issuer' \
+              -H 'accept: */*' \
+              -H 'Content-Type: application/json' \
+              -d "{
+                \"did\": \"${DID}\",
+                \"credentials\": [{
+                  \"credentialsType\": \"UserCredential\"
+                }]
+              }"
+            
+            if [ $? -eq 0 ]; then
+              echo "Registration successful."
+            else
+              echo "Registration FAILED."
+              exit 1
+            fi

@@ -1,0 +1,23 @@
+# did-helper/templates/did-helper-ingress.yaml
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: did-helper
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{ include "did-helper.labels" . | nindent 4 }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: did-helper
+                port:
+                  name: http # Refers to the port name defined in the Service
+{{- end }}

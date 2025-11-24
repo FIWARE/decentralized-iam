@@ -1,0 +1,7 @@
+# did-helper/Chart.yaml
+apiVersion: v2
+name: did-helper
+description: DID Helper service
+type: application
+version: 0.0.1
+appVersion: "0.3.0"

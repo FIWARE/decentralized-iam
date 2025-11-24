@@ -1,0 +1,176 @@
+vc-authentication:
+  authentication:
+    mysqlRootPassword: eofUpsr1ru5x60tMHWzUSxur1lxNyN
+    mysqlReplicationPassword: mRBd34c7I1Bq9zFL@tPN6E$IIB^rfyWd
+    mysqlPassword: BewlyMBIb5^Ly8jB!$kKpIH^z!VIq#af
+
+  mysql:
+    auth:
+      rootPassword: eofUpsr1ru5x60tMHWzUSxur1lxNyN
+      password: BewlyMBIb5^Ly8jB!$kKpIH^z!VIq#af
+    primary:
+      persistence:
+        enabled: false
+
+  vcverifier:
+    ingress:
+      enabled: true
+      className: apisix
+      hosts:
+        - host: verifier.127.0.0.1.nip.io
+          paths:
+          - /
+    deployment:
+      verifier:
+        tirAddress: http://tir.127.0.0.1.nip.io:8080/
+        did: did:key:myverifier
+        supportedModes: ["byValue","byReference"]
+        clientIdentification:
+          keyPath: /certificate/client.key.pem
+          requestKeyAlgorithm: ES256
+          id: x509_san_dns:provider-verifier.io
+          certificatePath: /certificate/client-chain-bundle.cert.pem
+      server:
+        host: http://verifier.127.0.0.1.nip.io:8080
+      configRepo:
+        configEndpoint: http://credentials-config-service:8080
+      additionalVolumes:
+        - name: certificates
+          secret:
+            secretName: verifier-certs
+        # add the self generated root ca to the system truststore
+        - name: root-ca
+          emptyDir: {}
+      additionalVolumeMounts:
+        - name: certificates
+          mountPath: /certificate
+        # add the self generated root ca to the system truststore
+        - name: root-ca
+          mountPath: /etc/ssl/cert.pem
+          subPath: cert.pem
+      initContainers:
+        # add the self generated root ca to the system truststore
+        - name: add-root-ca
+          image: alpine:3.21.3
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - |
+              #!/bin/sh
+              cp /etc/ssl/cert.pem /root-ca/cert.pdata.typeem
+              cat /root-ca/cacert.pem >> /root-ca/cert.pem
+          volumeMounts:
+            - name: root-ca
+              mountPath: /root-ca
+            - name: certificates
+              mountPath: /root-ca/cacert.pem
+              subPath: cacert.pem
+
+  trusted-issuers-list:
+    ingress:
+      tir:
+        annotations:
+          kubernetes.io/ingress.class: "apisix" # Workaround since chart does not set className properly
+        enabled: true
+        hosts:
+          - host: tir.127.0.0.1.nip.io
+      til:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: "apisix" # Workaround since chart does not set className properly
+        hosts:
+          - host: til.127.0.0.1.nip.io
+
+  credentials-config-service:
+    registration:
+      enabled: true
+      services:
+        - id: data-service
+          defaultOidcScope: "default"
+          oidcScopes:
+            "default":
+              credentials:
+                - type: UserCredential
+                  trustedParticipantsLists: []
+                  trustedIssuersLists:
+                    - http://trusted-issuers-list:8080
+                  jwtInclusion:
+                    enabled: true
+                    fullInclusion: true
+
+odrl-authorization:
+  apisix:
+    ingress-controller:
+      enabled: true
+      apisix:
+        adminService:
+          name: iam-apisix-admin
+      config:
+        kubernetes:
+          defaultIngressClass: true
+        provider:
+          type: apisix-standalone
+    apisix:
+      deployment:
+        role: traditional
+        role_traditional:
+          config_provider: yaml
+    ingress:
+      enabled: true
+      hostname: apisix.127.0.0.1.nip.io
+      hosts:
+        - host: apisix.127.0.0.1.nip.io
+          paths: ["/"]
+    service:
+      type: LoadBalancer
+    catchAllRoute:
+      enabled: false
+    routes:
+      - host: apisix.127.0.0.1.nip.io
+        uri: "/*"
+        upstream:
+          nodes:
+            mockserver:8080: 1
+          type: roundrobin
+        plugins:
+          openid-connect:
+            client_id: ""
+            client_secret: the-secret
+            bearer_only: true
+            use_jwks: true
+            discovery: http://verifier:3000/.well-known/openid-configuration
+          opa:
+            host: http://localhost:8181
+            policy: policy/main
+            with_body: true
+      - host: pap.127.0.0.1.nip.io
+        uri: /*
+        upstream:
+          nodes:
+            odrl-pap:8080: 1
+    etcd:
+      enabled: false
+    opa:
+      config:
+        policies:
+          minDelay: 1
+          maxDelay: 1
+      apisix:
+        adminService:
+          namespace: odrl-authorization
+          name: odrl-authorization-apisix-admin
+  odrl-pap:
+    database:
+      url: jdbc:postgresql://postgres:5432/odrl
+      username: odrl
+      existingSecret:
+        enabled: true
+        name: odrl.postgres.credentials.postgresql.acid.zalan.do
+        key: password
+    ingress:
+      enabled: true
+      hosts:
+      - host: pap.127.0.0.1.nip.io
+        paths:
+          - "/"
