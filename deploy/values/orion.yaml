@@ -1,0 +1,14 @@
+mongo:
+  enabled: false
+broker:
+  multiserviceEnabled: false
+  db:
+    replicaSetEnabled: true
+    replicaSet: mongodb
+    sslEnabled: false
+    name: orion
+    hosts:
+      - mongodb-svc
+    auth:
+      user: admin
+      password: MnI3ejd4c0FRSWs4Wm5SNUVsUUJZMk9KY1kyWVl4
