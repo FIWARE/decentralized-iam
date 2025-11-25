@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    labels:
+      type: data
+    name: data-volume-mongodb-0
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 1Gi
+    hostPath:
+      path: /opt/data/mongo-data-0
+      type: ""
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: default
+    volumeMode: Filesystem
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    labels:
+      type: logs
+    name: logs-volume-mongodb-0
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 1Gi
+    hostPath:
+      path: /opt/data/mongo-logs-0
+      type: ""
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: default
+    volumeMode: Filesystem
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: mongodb
+  namespace: orion
+spec:
+  members: 1
+  type: "ReplicaSet"
+  version: "6.0.5"
+  security:
+    authentication:
+      modes:
+      - SCRAM
+  additionalMongodConfig:
+    storage.wiredTiger.engineConfig.journalCompressor: zlib
+  users:
+    - db: admin
+      name: admin
+      passwordSecretRef:
+        name: mongodb-admin-password
+      roles:
+      - db: admin
+        name: clusterAdmin
+      - db: admin
+        name: userAdminAnyDatabase
+      - db: admin
+        name: readWriteAnyDatabase
+      scramCredentialsSecretName: mongodb-admin-password
+    - db: orion
+      name: orion
+      passwordSecretRef:
+        name: mongodb-orion-password
+      roles:
+      - db: orion
+        name: readWrite
+      scramCredentialsSecretName: mongodb-orion-password
+  statefulSet:
+    spec:
+      template:
+        spec:
+          #  Hostpath volumes are owned by root
+          #  but MongoDB containers run as non root
+          #  so we use an init container to change the owner of
+          #  the directory (init containers run as root)
+          initContainers:
+          - command:
+              - chown
+              - -R
+              - "2000"
+              - /data
+            image: busybox
+            volumeMounts:
+            - mountPath: /data
+              name: data-volume
+            securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
+              runAsGroup: 0
+            name: change-dir-permissions  
+          containers:
+            - name: mongod
+              resources:
+                requests:
+                  memory: "512Mi" # ToDo: change
+                  cpu: "250m"     # ToDo: change
+                limits:
+                  memory: "1Gi"   # ToDo: change
+                  cpu: "500m"     # ToDo: change
+            - name: mongodb-agent
+              resources:
+                requests:
+                  memory: "512Mi" # ToDo: change
+                  cpu: "250m"     # ToDo: change
+                limits:
+                  memory: "1Gi"   # ToDo: change
+                  cpu: "500m"     # ToDo: change
+      volumeClaimTemplates:
+      - metadata:
+          name: data-volume
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1G 
+          storageClassName: "default"
+      - metadata:
+          name: logs-volume
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1G
+          storageClassName: "default"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-admin-password
+  namespace: orion
+type: Opaque
+stringData:
+  password: MnI3ejd4c0FRSWs4Wm5SNUVsUUJZMk9KY1kyWVl4
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-orion-password
+  namespace: orion
+type: Opaque
+stringData:
+  password: eTlsb2ZYNXR3TTNGbGJyNHBDRE42YTJyU09XU28y
