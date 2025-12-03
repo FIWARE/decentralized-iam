@@ -25,6 +25,15 @@ releases:
       - "{{ .Release.Namespace }}"
       - "-f"
       - "./config/postgresql.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/postgresql.yaml"
 
 - name: keycloak
   namespace: iam
@@ -47,6 +56,15 @@ releases:
       - "{{ .Release.Namespace }}"
       - "-f"
       - "./config/keycloak-config.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/keycloak-config.yaml"
 
 # ToDo: refactor, use a public chart repository
 - name: did-helper
@@ -55,8 +73,6 @@ releases:
   version: 0.0.1
   labels:
     deploy: infra
-  needs:
-    - iam/iam
   values:
     - values/did-helper.yaml
 
@@ -96,6 +112,31 @@ releases:
       - "{{ .Release.Namespace }}"
       - "-f"
       - "./config/config-job.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/config-job.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/verifier-certs.yaml"
+  - events: ["preuninstall"] # ToDo: check if it is actually necessary
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-f"
+      - "./config/coredns.yaml"
 
 - name: mongodb
   namespace: orion
@@ -109,6 +150,13 @@ releases:
     command: "kubectl"
     args:
       - "apply"
+      - "-f"
+      - "./config/mongodb_cluster.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
       - "-f"
       - "./config/mongodb_cluster.yaml"
 

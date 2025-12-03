@@ -4,6 +4,6 @@ dependencies:
   version: 0.1.1
 - name: odrl-authorization
   repository: https://fiware.github.io/odrl-authorization/
-  version: 1.0.1
-digest: sha256:db5cabf413f3faa5b25d29a04825a4684989c8d185953e02018ff3fc43337efc
-generated: "2025-11-24T11:25:14.11675+01:00"
+  version: 1.0.3
+digest: sha256:61be8d36f10047f3f3339a6455d173d7b56757622fea665409888c342679cd73
+generated: "2025-12-03T11:03:13.49533+01:00"

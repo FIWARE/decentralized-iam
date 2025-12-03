@@ -124,14 +124,18 @@ odrl-authorization:
           paths: ["/"]
     service:
       type: LoadBalancer
+      http:
+        enabled: true
+        servicePort: 8080
     catchAllRoute:
       enabled: false
     routes:
-      - host: apisix.127.0.0.1.nip.io
+      - host: orion.127.0.0.1.nip.io
         uri: "/*"
+        namespace: orion
         upstream:
           nodes:
-            mockserver:8080: 1
+            orion:1026: 1
           type: roundrobin
         plugins:
           openid-connect:
@@ -139,7 +143,7 @@ odrl-authorization:
             client_secret: the-secret
             bearer_only: true
             use_jwks: true
-            discovery: http://verifier:3000/.well-known/openid-configuration
+            discovery: http://verifier:3000/services/data-service/.well-known/openid-configuration
           opa:
             host: http://localhost:8181
             policy: policy/main
@@ -174,3 +178,12 @@ odrl-authorization:
       - host: pap.127.0.0.1.nip.io
         paths:
           - "/"
+    deployment:
+      command:
+        - /bin/sh
+      args:
+        - -ec
+        - |
+          #!/bin/sh
+          export GENERAL_ORGANIZATION_DID=did:key:did:key:client_did_key
+          ./application -Dquarkus.http.host=0.0.0.0
