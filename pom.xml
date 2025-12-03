@@ -146,7 +146,7 @@
                     <skip>true</skip>
                     <portBindings>
                         <!-- NGINX ingress controller http & https -->
-                        <portBinding>8080:80</portBinding>
+                        <portBinding>8080:8080</portBinding>
                         <portBinding>8443:443</portBinding>
                     </portBindings>
                 </configuration>
@@ -165,7 +165,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.1</version>
@@ -185,7 +185,7 @@
                                 <argument>sync</argument>
                                 <argument>-f</argument>
                                 <argument>${main.basedir}/deploy/helmfile.yaml</argument>
-                                <argument>--wait</argument>
+                                <argument>\-\-wait</argument>
                             </arguments>
                             <environmentVariables>
                                 <KUBECONFIG>${main.basedir}/target/k3s.yaml</KUBECONFIG>
@@ -204,10 +204,10 @@
                                 <argument>wait</argument>
                                 <argument>-n</argument>
                                 <argument>vc-authentication</argument>
-                                <argument>--for=condition=complete</argument>
+                                <argument>\-\-for=condition=complete</argument>
                                 <argument>job</argument>
-                                <argument>--selector=app.kubernetes.io/instance=iam</argument>
-                                <argument>--timeout=300s</argument>
+                                <argument>\-\-selector=app.kubernetes.io/instance=iam</argument>
+                                <argument>\-\-timeout=300s</argument>
                             </arguments>
                             <environmentVariables>
                                 <KUBECONFIG>${main.basedir}/target/k3s.yaml</KUBECONFIG>
@@ -228,7 +228,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
     <profiles>

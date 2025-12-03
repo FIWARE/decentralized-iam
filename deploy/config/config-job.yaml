@@ -15,7 +15,7 @@ spec:
         args:
           - |
             echo "--- 1. Fetching and exporting DID variable ---"
-            export $(curl -s -f -X GET http://did-helper.127.0.0.1.nip.io/did-material/did.env)
+            export $(curl -s -f -X GET http://did-helper.127.0.0.1.nip.io:8080/did-material/did.env)
             
             if [ -z "$DID" ]; then
               echo "ERROR: DID variable not set. Exiting."
@@ -25,7 +25,7 @@ spec:
 
             echo "--- 2. Registering UserCredential ---"
             curl -s -f -v -X 'POST' \
-              'http://til.127.0.0.1.nip.io/issuer' \
+              'http://til.127.0.0.1.nip.io:8080/issuer' \
               -H 'accept: */*' \
               -H 'Content-Type: application/json' \
               -d "{
