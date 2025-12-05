@@ -1,0 +1,1 @@
+[ToDo](https://fiware-requirements.readthedocs.io/en/latest/GE_Requirements.html#licensing-and-ipr-management)
