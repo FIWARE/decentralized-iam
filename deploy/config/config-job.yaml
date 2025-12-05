@@ -31,7 +31,7 @@ spec:
               -d "{
                 \"did\": \"${DID}\",
                 \"credentials\": [{
-                  \"credentialsType\": \"UserCredential\"
+                  \"credentialsType\": \"OperatorCredential\"
                 }]
               }"
             
