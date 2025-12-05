@@ -17,16 +17,16 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
 
-- [decentralized-iam](#decentralized-iam)
-  - [Overview](#overview)
-  - [Release Information](#release-information)
-  - [Deployment](#deployment)
-    - [Local Deployment](#local-deployment)
-    - [Deployment with Helm](#deployment-with-helm)
-  - [Testing](#testing)
-  - [How to contribute](#how-to-contribute)
-  - [License](#license)
+- [Overview](#overview)
+- [Release Information](#release-information)
+- [Deployment](#deployment)
+  - [Local Deployment](#local-deployment)
+  - [Deployment with Helm](#deployment-with-helm)
+- [Testing](#testing)
+- [How to contribute](#how-to-contribute)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
