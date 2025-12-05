@@ -1,14 +1,12 @@
 mongo:
-  enabled: false
-broker:
-  multiserviceEnabled: false
-  db:
-    replicaSetEnabled: true
-    replicaSet: mongodb
-    sslEnabled: false
-    name: orion
-    hosts:
-      - mongodb-svc
-    auth:
-      user: admin
-      password: MnI3ejd4c0FRSWs4Wm5SNUVsUUJZMk9KY1kyWVl4
+  image: # Chenge default image to support multiarch
+    repository: mongo
+    tag: 4.4 
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: "apisix" # Workaround since chart does not set className properly
+  enabled: true
+  hosts:
+    - host: orion.127.0.0.1.nip.io
+      paths:
+      - /

@@ -91,7 +91,7 @@ vc-authentication:
           oidcScopes:
             "default":
               credentials:
-                - type: UserCredential
+                - type: OperatorCredential
                   trustedParticipantsLists: []
                   trustedIssuersLists:
                     - http://trusted-issuers-list:8080
@@ -118,9 +118,11 @@ odrl-authorization:
           config_provider: yaml
     ingress:
       enabled: true
-      hostname: apisix.127.0.0.1.nip.io
+      # hostname: apisix.127.0.0.1.nip.io
       hosts:
         - host: apisix.127.0.0.1.nip.io
+          paths: ["/"]
+        - host: data-service.127.0.0.1.nip.io
           paths: ["/"]
     service:
       type: LoadBalancer
@@ -130,7 +132,7 @@ odrl-authorization:
     catchAllRoute:
       enabled: false
     routes:
-      - host: orion.127.0.0.1.nip.io
+      - host: data-service.127.0.0.1.nip.io
         uri: "/*"
         namespace: orion
         upstream:

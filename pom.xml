@@ -8,9 +8,9 @@
     <artifactId>decentralizedIam</artifactId>
     <version>0.0.1</version>
     <packaging>pom</packaging>
-    <!-- <modules>
+    <modules>
         <module>it</module>
-    </modules> -->
+    </modules>
 
     <properties>
         <jdk.version>17</jdk.version>
@@ -165,7 +165,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.1</version>
@@ -185,7 +185,7 @@
                                 <argument>sync</argument>
                                 <argument>-f</argument>
                                 <argument>${main.basedir}/deploy/helmfile.yaml</argument>
-                                <argument>\-\-wait</argument>
+                                <argument>--wait</argument>
                             </arguments>
                             <environmentVariables>
                                 <KUBECONFIG>${main.basedir}/target/k3s.yaml</KUBECONFIG>
@@ -203,11 +203,11 @@
                             <arguments>
                                 <argument>wait</argument>
                                 <argument>-n</argument>
-                                <argument>vc-authentication</argument>
-                                <argument>\-\-for=condition=complete</argument>
+                                <argument>iam</argument>
+                                <argument>--for=condition=complete</argument>
                                 <argument>job</argument>
-                                <argument>\-\-selector=app.kubernetes.io/instance=iam</argument>
-                                <argument>\-\-timeout=300s</argument>
+                                <argument>--selector=app.kubernetes.io/instance=iam</argument>
+                                <argument>--timeout=300s</argument>
                             </arguments>
                             <environmentVariables>
                                 <KUBECONFIG>${main.basedir}/target/k3s.yaml</KUBECONFIG>
@@ -228,7 +228,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
         </plugins>
     </build>
     <profiles>
