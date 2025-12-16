@@ -70,17 +70,19 @@ vc-authentication:
   trusted-issuers-list:
     ingress:
       tir:
-        annotations:
-          kubernetes.io/ingress.class: "apisix" # Workaround since chart does not set className properly
         enabled: true
+        className: apisix
         hosts:
           - host: tir.127.0.0.1.nip.io
       til:
         enabled: true
-        annotations:
-          kubernetes.io/ingress.class: "apisix" # Workaround since chart does not set className properly
+        className: apisix
         hosts:
           - host: til.127.0.0.1.nip.io
+    config:
+      datasources:
+        default:
+          dialect: MYSQL
 
   credentials-config-service:
     registration:
@@ -88,6 +90,7 @@ vc-authentication:
       services:
         - id: data-service
           defaultOidcScope: "default"
+          authorizationType: "FRONTEND_V2"
           oidcScopes:
             "default":
               credentials:
