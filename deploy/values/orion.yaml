@@ -1,0 +1,12 @@
+mongo:
+  image: # Chenge default image to support multiarch
+    repository: mongo
+    tag: 4.4 
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: "apisix" # Workaround since chart does not set className properly
+  enabled: true
+  hosts:
+    - host: orion.127.0.0.1.nip.io
+      paths:
+      - /
