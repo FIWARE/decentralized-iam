@@ -19,9 +19,11 @@ the product planned for **{{date}}**:
 <!-- {{bullet list of features/tasks}} - this should be a simple list of features you plan to address in the given period.
 Try to be comprehensive as well as short in the description of each feature (**2 lines max**). -->
 
+- Replace bitnami-keycloak.
+
 - Update dependencies to use latest compatible versions.
 
--   Improve integration tests.
+- Improve integration tests.
 
 <!-- {{If the description of a given feature will need more elaboration, please add
 the following text after end of the description}}:

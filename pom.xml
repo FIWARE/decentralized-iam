@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.fiware</groupId>
-    <artifactId>decentralizedIam</artifactId>
+    <groupId>org.fiware.dataspace</groupId>
+    <artifactId>decentralized-iam</artifactId>
     <version>0.0.1</version>
     <packaging>pom</packaging>
     <modules>
@@ -145,7 +145,7 @@
                 <configuration>
                     <skip>true</skip>
                     <portBindings>
-                        <!-- NGINX ingress controller http & https -->
+                        <!-- APISIX ingress controller http & https -->
                         <portBinding>8080:8080</portBinding>
                         <portBinding>8443:443</portBinding>
                     </portBindings>

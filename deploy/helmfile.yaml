@@ -77,7 +77,6 @@ releases:
 - name: iam
   namespace: iam
   chart: ../charts/decentralized-iam
-  version: 0.1.0
   labels:
     deploy: iam
   values:

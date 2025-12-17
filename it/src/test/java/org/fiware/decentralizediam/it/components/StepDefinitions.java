@@ -97,7 +97,7 @@ public class StepDefinitions {
                 Response r = HTTP_CLIENT.newCall(deletionRequest).execute();
                 String message = r.body().string();
                 r.body().close();
-                log.warn(message);
+                log.debug(message);
             } catch (IOException e) {
                 // just log
                 log.warn("Was not able to clean up policy {}.", policyId);
