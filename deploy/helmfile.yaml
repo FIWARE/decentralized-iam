@@ -1,0 +1,145 @@
+repositories:
+- name: postgres-operator
+  url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+- name: fiware
+  url: https://fiware.github.io/helm-charts
+- name: bitnami
+  url: https://charts.bitnami.com/bitnami
+
+releases:
+- name: psql
+  namespace: iam
+  chart: postgres-operator/postgres-operator
+  version: 1.13.0
+  labels:
+    deploy: infra
+  hooks:
+  - events: ["postsync"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "apply"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/postgresql.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/postgresql.yaml"
+
+- name: keycloak
+  namespace: iam
+  chart: oci://registry-1.docker.io/bitnamicharts/keycloak
+  version: 25.2.0
+  labels:
+    deploy: infra
+  needs:
+    - iam/psql
+    - iam/iam
+  values:
+    - values/keycloak.yaml
+  hooks:
+  - events: ["presync"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "apply"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/keycloak-config.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/keycloak-config.yaml"
+
+# ToDo: refactor, use a public chart repository
+- name: did-helper
+  namespace: iam
+  chart: ./aux-charts/did-helper
+  version: 0.0.1
+  labels:
+    deploy: infra
+  values:
+    - values/did-helper.yaml
+
+- name: iam
+  namespace: iam
+  chart: ../charts/decentralized-iam
+  labels:
+    deploy: iam
+  values:
+    - values/iam.yaml
+  needs:
+    - iam/psql
+  hooks:
+  - events: ["presync"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "apply"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/verifier-certs.yaml"
+  - events: ["postsync"] # ToDo: check if it is actually necessary
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "apply"
+      - "-f"
+      - "./config/coredns.yaml"
+  - events: ["postsync"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "apply"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/config-job.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/config-job.yaml"
+  - events: ["preuninstall"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-n"
+      - "{{ .Release.Namespace }}"
+      - "-f"
+      - "./config/verifier-certs.yaml"
+  - events: ["preuninstall"] # ToDo: check if it is actually necessary
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "delete"
+      - "-f"
+      - "./config/coredns.yaml"
+
+- name: orion
+  namespace: orion
+  chart: fiware/orion
+  version: 1.6.0
+  labels:
+    deploy: orion
+  values:
+    - values/orion.yaml

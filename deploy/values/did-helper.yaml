@@ -1,0 +1,16 @@
+secret:
+  create: true
+  name: did-helper-secret
+  storePass: Xe5Ou!&Oc@0Ec#ejaE5z1$Lp5$7ps6gn
+serviceType: ClusterIP
+port: 3001
+cert:
+  country: ES
+  state: Madrid
+  locality: Madrid
+  organization: My Awesome Org
+  commonName: www.myawesomeorg.com
+ingress:
+  enabled: true
+  host: did-helper.127.0.0.1.nip.io
+  className: apisix

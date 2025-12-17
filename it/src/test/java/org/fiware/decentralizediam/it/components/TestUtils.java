@@ -1,0 +1,113 @@
+package org.fiware.decentralizediam.it.components;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.keycloak.crypto.KeyWrapper;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+import java.util.Map;
+
+/**
+ * Helper methods for the test.
+ * @author <a href="https://github.com/wistefan">Stefan Wiedemann</a>
+ * @author <a href="https://github.com/vramperez">Victor Ramperez</a>
+ */
+@Slf4j
+public class TestUtils {
+
+    private static final String PRIVATE_KEY_PATH = "/did-material/private-key.pem";
+    private static final String DID_ENV_PATH = "/did-material/did.env";
+
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    static {
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
+    public static final OkHttpClient OK_HTTP_CLIENT;
+
+    static {
+        try {
+            OK_HTTP_CLIENT = new OkHttpClient.Builder()
+                    .hostnameVerifier((hostname, session) -> true) // trust all hostnames
+                    .followRedirects(false)
+                    .sslSocketFactory(getTrustAllContext().getSocketFactory(), getTrustAllManager())
+                    .build();
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private TestUtils() {
+        // prevent instantiation
+    }
+
+    public static X509TrustManager getTrustAllManager() {
+        return new X509TrustManager() {
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
+        };
+    }
+
+    public static SSLContext getTrustAllContext() throws KeyManagementException, NoSuchAlgorithmException {
+
+        SSLContext trustAllContext = SSLContext.getInstance("TLS");
+        trustAllContext.init(null, new TrustManager[]{getTrustAllManager()}, new java.security.SecureRandom());
+        return trustAllContext;
+    }
+
+    public static String getDid(String host) throws Exception {
+        Request keyRequest = new Request.Builder()
+                .get()
+                .url(host + DID_ENV_PATH)
+                .build();
+        Response didResponse = OK_HTTP_CLIENT.newCall(keyRequest).execute();
+        String did = getDidFromEnv(didResponse.body().byteStream());
+        didResponse.body().close();
+        return did;
+    }
+
+    private static String getDidFromEnv(InputStream didInputStream) throws Exception {
+        String didEnvString = new String(didInputStream.readAllBytes(), StandardCharsets.UTF_8);
+        return didEnvString.split("=")[1];
+    }
+
+    private static KeyWrapper getKeyWrapper(InputStream keyInputStream) throws Exception {
+        String keyString = new String(keyInputStream.readAllBytes(), StandardCharsets.UTF_8);
+        PEMParser pemParser = new PEMParser(new StringReader(keyString));
+        JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+        Object object = pemParser.readObject();
+        KeyPair kp = converter.getKeyPair((PEMKeyPair) object);
+        PrivateKey privateKey = kp.getPrivate();
+        KeyWrapper keyWrapper = new KeyWrapper();
+        keyWrapper.setPrivateKey(privateKey);
+        return keyWrapper;
+    }
+}
