@@ -2,7 +2,7 @@ apiVersion: v2
 name: decentralized-iam
 description: Umbrella Chart for the FIWARE decentralized-iam, combining FIWARE vc-authentication and odrl-authorization components.
 type: application
-version: 0.1.0
+version: 0.2.0
 dependencies:
   - name: vc-authentication
     repository: https://fiware.github.io/vc-authentication/
