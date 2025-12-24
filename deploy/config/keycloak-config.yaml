@@ -1011,7 +1011,7 @@ data:
             "config": {
               "keystore": [ "/did-material/cert.pfx" ],
               "keystorePassword": [ "${STORE_PASS}" ],
-              "keyAlias": [ "didPrivateKey" ],
+              "keyAlias": [ "myAlias" ],
               "keyPassword": [ "${STORE_PASS}" ],
               "kid": [ "${DID}"],
               "active": [
