@@ -1,38 +1,10 @@
 repositories:
-- name: postgres-operator
-  url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
 - name: fiware
   url: https://fiware.github.io/helm-charts
 - name: bitnami
   url: https://charts.bitnami.com/bitnami
 
 releases:
-- name: psql
-  namespace: iam
-  chart: postgres-operator/postgres-operator
-  version: 1.13.0
-  labels:
-    deploy: infra
-  hooks:
-  - events: ["postsync"]
-    showlogs: true
-    command: "kubectl"
-    args:
-      - "apply"
-      - "-n"
-      - "{{ .Release.Namespace }}"
-      - "-f"
-      - "./config/postgresql.yaml"
-  - events: ["preuninstall"]
-    showlogs: true
-    command: "kubectl"
-    args:
-      - "delete"
-      - "-n"
-      - "{{ .Release.Namespace }}"
-      - "-f"
-      - "./config/postgresql.yaml"
-
 - name: keycloak
   namespace: iam
   chart: oci://registry-1.docker.io/bitnamicharts/keycloak
@@ -40,7 +12,6 @@ releases:
   labels:
     deploy: infra
   needs:
-    - iam/psql
     - iam/iam
   values:
     - values/keycloak.yaml
@@ -81,8 +52,6 @@ releases:
     deploy: iam
   values:
     - values/iam.yaml
-  needs:
-    - iam/psql
   hooks:
   - events: ["presync"]
     showlogs: true
