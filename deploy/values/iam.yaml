@@ -1,16 +1,21 @@
 vc-authentication:
-  authentication:
-    mysqlRootPassword: eofUpsr1ru5x60tMHWzUSxur1lxNyN
-    mysqlReplicationPassword: mRBd34c7I1Bq9zFL@tPN6E$IIB^rfyWd
-    mysqlPassword: BewlyMBIb5^Ly8jB!$kKpIH^z!VIq#af
+  postgres-operator:
+    configKubernetes:
+      enable_cross_namespace_secret: true
 
-  mysql:
-    auth:
-      rootPassword: eofUpsr1ru5x60tMHWzUSxur1lxNyN
-      password: BewlyMBIb5^Ly8jB!$kKpIH^z!VIq#af
-    primary:
-      persistence:
-        enabled: false
+  managedPostgres:
+    enabled: true
+    config:
+      volume:
+        storageClass: "local-path"
+      users:
+        keycloak:
+          - createdb
+        odrl:
+          - createdb
+      databases:
+        keycloak: keycloak
+        odrl: odrl
 
   vcverifier:
     ingress:
@@ -79,10 +84,6 @@ vc-authentication:
         className: apisix
         hosts:
           - host: til.127.0.0.1.nip.io
-    config:
-      datasources:
-        default:
-          dialect: MYSQL
 
   credentials-config-service:
     registration:
