@@ -1,9 +1,9 @@
 dependencies:
 - name: vc-authentication
   repository: https://fiware.github.io/vc-authentication/
-  version: 0.2.1
+  version: 1.0.0
 - name: odrl-authorization
   repository: https://fiware.github.io/odrl-authorization/
-  version: 1.0.4
-digest: sha256:d54c6085095ea088f3d2bd1c1ff2adda16e35fa3a796ce86395d852c67ac3653
-generated: "2025-12-23T12:48:34.832716+01:00"
+  version: 1.0.5
+digest: sha256:7eecfb0950881580753d6c0286f45d2369bbf08a8eea4343ddb43a78b2953436
+generated: "2026-01-09T11:38:44.561437+01:00"

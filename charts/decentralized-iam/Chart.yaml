@@ -6,7 +6,7 @@ version: 0.3.0
 dependencies:
   - name: vc-authentication
     repository: https://fiware.github.io/vc-authentication/
-    version: 0.2.1
+    version: 1.0.0
   - name: odrl-authorization
     repository: https://fiware.github.io/odrl-authorization/
     version: 1.0.5
