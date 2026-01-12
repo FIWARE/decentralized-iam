@@ -1009,7 +1009,7 @@ data:
             "providerId": "java-keystore",
             "subComponents": {},
             "config": {
-              "keystore": [ "/did-material/cert.pfx" ],
+              "keystore": [ "/keystore/cert.pfx" ],
               "keystorePassword": [ "${STORE_PASS}" ],
               "keyAlias": [ "myAlias" ],
               "keyPassword": [ "${STORE_PASS}" ],

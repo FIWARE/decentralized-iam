@@ -18,3 +18,12 @@ config:
     keyAlias: myAlias
   generateKey:
     enabled: true
+
+volumeMounts:
+  - name: did-material
+    mountPath: /cert
+
+volumes:
+  - name: did-material
+    persistentVolumeClaim:
+      claimName: did-material-pvc

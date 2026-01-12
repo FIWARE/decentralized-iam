@@ -41,6 +41,14 @@ args:
     export $(cat /did-material/did.env)
     exec /opt/bitnami/scripts/keycloak/entrypoint.sh /opt/bitnami/scripts/keycloak/run.sh  
 initContainers:
+  - name: set-read-permissions
+    image: busybox
+    command: ["sh", "-c", "chmod -R a+r /keystore"]
+    securityContext:
+      runAsUser: 0
+    volumeMounts:
+      - name: keystore
+        mountPath: /keystore
   - name: get-did
     image: ubuntu
     command:
@@ -52,7 +60,6 @@ initContainers:
         apt-get -y update; apt-get -y install wget; apt-get -y install sed;
         
         cd /did-material
-        wget http://did-helper:8080/did-material/cert.pfx
         wget http://did-helper:8080/did-material/did.env
         echo "" >> /did-material/did.env
         echo "CLIENT_DID=did:key:did:key:client_did_key" >> /did-material/did.env
@@ -82,6 +89,9 @@ initContainers:
 extraVolumeMounts:
   - name: did-material
     mountPath: /did-material
+  - name: keystore
+    mountPath: /keystore
+    readOnly: true
   - name: did-material
     mountPath: "/etc/env"
     readOnly: true
@@ -99,6 +109,9 @@ extraVolumes:
   - name: realms
     configMap:
       name: test-realm-realm
+  - name: keystore
+    persistentVolumeClaim:
+      claimName: did-material-pvc
 
 extraEnvVars:
   - name: KEYCLOAK_LOG_LEVEL
