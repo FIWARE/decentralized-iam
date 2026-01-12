@@ -1,16 +1,29 @@
-secret:
-  create: true
-  name: did-helper-secret
-  storePass: Xe5Ou!&Oc@0Ec#ejaE5z1$Lp5$7ps6gn
-serviceType: ClusterIP
-port: 3001
-cert:
-  country: ES
-  state: Madrid
-  locality: Madrid
-  organization: My Awesome Org
-  commonName: www.myawesomeorg.com
+service:
+  port: 8080
 ingress:
   enabled: true
-  host: did-helper.127.0.0.1.nip.io
   className: apisix
+  hosts:
+    - host: did-helper.127.0.0.1.nip.io
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+config:
+  server:
+    hostUrl: "http://did-helper.127.0.0.1.nip.io:8080/did-material"
+    didType: key
+    outputFormat: env
+    keystorePasswordSecretName: did-helper-secret
+    keystorePasswordSecretKey: store-pass
+    keyAlias: myAlias
+  generateKey:
+    enabled: true
+
+volumeMounts:
+  - name: did-material
+    mountPath: /cert
+
+volumes:
+  - name: did-material
+    persistentVolumeClaim:
+      claimName: did-material-pvc

@@ -12,7 +12,7 @@ releases:
   labels:
     deploy: infra
   needs:
-    - iam/iam
+    - iam/did-helper
   values:
     - values/keycloak.yaml
   hooks:
@@ -35,15 +35,51 @@ releases:
       - "-f"
       - "./config/keycloak-config.yaml"
 
-# ToDo: refactor, use a public chart repository
 - name: did-helper
   namespace: iam
-  chart: ./aux-charts/did-helper
-  version: 0.0.1
+  chart: fiware/did-helper
+  version: 0.1.9
   labels:
     deploy: infra
   values:
     - values/did-helper.yaml
+  hooks:
+    - events: ["presync"]
+      showlogs: true
+      command: "kubectl"
+      args:
+        - "apply"
+        - "-n"
+        - "{{ .Release.Namespace }}"
+        - "-f"
+        - "./config/did-helper-keystore-pwd.yaml"
+    - events: ["preuninstall"]
+      showlogs: true
+      command: "kubectl"
+      args:
+        - "delete"
+        - "-n"
+        - "{{ .Release.Namespace }}"
+        - "-f"
+        - "./config/did-helper-keystore-pwd.yaml"
+    - events: ["presync"]
+      showlogs: true
+      command: "kubectl"
+      args:
+        - "apply"
+        - "-n"
+        - "{{ .Release.Namespace }}"
+        - "-f"
+        - "./config/did-material-pvc.yaml"
+    - events: ["preuninstall"]
+      showlogs: true
+      command: "kubectl"
+      args:
+        - "delete"
+        - "-n"
+        - "{{ .Release.Namespace }}"
+        - "-f"
+        - "./config/did-material-pvc.yaml"
 
 - name: iam
   namespace: iam
