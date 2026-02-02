@@ -5,8 +5,10 @@ type: application
 version: 0.2.1
 dependencies:
   - name: vc-authentication
+    alias: vcAuthentication
     repository: https://fiware.github.io/vc-authentication/
     version: 1.0.0
   - name: odrl-authorization
+    alias: odrlAuthorization
     repository: https://fiware.github.io/odrl-authorization/
     version: 1.0.5
