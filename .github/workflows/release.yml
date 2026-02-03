@@ -5,6 +5,13 @@ on:
     branches:
       - master
 
+  workflow_dispatch:
+    inputs:
+      bump_level:
+        description: 'Force release label (major, minor, patch)'
+        required: false
+        default: ''
+
 jobs:
 
     generate-version:
@@ -53,7 +60,7 @@ jobs:
 
         - name: Set version output
           id: out
-          run: echo "::set-output name=version::$(echo ${VERSION})"
+          run: echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
     deploy:
       name: "Release charts"
