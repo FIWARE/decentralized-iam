@@ -1,4 +1,4 @@
-vc-authentication:
+vcAuthentication:
   postgres-operator:
     configKubernetes:
       enable_cross_namespace_secret: true
@@ -103,7 +103,7 @@ vc-authentication:
                     enabled: true
                     fullInclusion: true
 
-odrl-authorization:
+odrlAuthorization:
   apisix:
     ingress-controller:
       enabled: true
