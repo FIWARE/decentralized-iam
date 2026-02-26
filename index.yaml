@@ -2,6 +2,25 @@ apiVersion: v1
 entries:
   decentralized-iam:
   - apiVersion: v2
+    created: "2026-02-26T14:25:45.339089561Z"
+    dependencies:
+    - alias: vcAuthentication
+      name: vc-authentication
+      repository: https://fiware.github.io/vc-authentication/
+      version: 1.1.0
+    - alias: odrlAuthorization
+      name: odrl-authorization
+      repository: https://fiware.github.io/odrl-authorization/
+      version: 1.0.5
+    description: Umbrella Chart for the FIWARE decentralized-iam, combining FIWARE
+      vc-authentication and odrl-authorization components.
+    digest: fc316ded2f35da58067a013164f622958537f70f84eddb6132ca4fa31fded53d
+    name: decentralized-iam
+    type: application
+    urls:
+    - https://github.com/FIWARE/decentralized-iam/releases/download/decentralized-iam-1.1.0/decentralized-iam-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
     created: "2026-02-03T15:42:26.271401311Z"
     dependencies:
     - alias: vcAuthentication
@@ -54,4 +73,4 @@ entries:
     urls:
     - https://github.com/FIWARE/decentralized-iam/releases/download/decentralized-iam-0.2.0/decentralized-iam-0.2.0.tgz
     version: 0.2.0
-generated: "2026-02-03T15:42:26.271419755Z"
+generated: "2026-02-26T14:25:45.339104769Z"
