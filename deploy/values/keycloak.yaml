@@ -25,6 +25,7 @@ ingress:
   enabled: true
   hostname: keycloak.127.0.0.1.nip.io
   ingressClassName: apisix
+  pathType: Prefix
 resources:
   requests:
     memory: "500Mi"

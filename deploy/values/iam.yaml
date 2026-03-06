@@ -63,7 +63,7 @@ vcAuthentication:
             - -c
             - |
               #!/bin/sh
-              cp /etc/ssl/cert.pem /root-ca/cert.pdata.typeem
+              cp /etc/ssl/cert.pem /root-ca/cert.pem
               cat /root-ca/cacert.pem >> /root-ca/cert.pem
           volumeMounts:
             - name: root-ca
@@ -109,6 +109,7 @@ odrlAuthorization:
       enabled: true
       apisix:
         adminService:
+          namespace: iam
           name: iam-apisix-admin
       config:
         kubernetes:
@@ -116,25 +117,14 @@ odrlAuthorization:
         provider:
           type: apisix-standalone
     apisix:
-      deployment:
-        role: traditional
-        role_traditional:
-          config_provider: yaml
-    ingress:
-      enabled: true
-      # hostname: apisix.127.0.0.1.nip.io
-      hosts:
-        - host: apisix.127.0.0.1.nip.io
-          paths: ["/"]
-        - host: data-service.127.0.0.1.nip.io
-          paths: ["/"]
-    service:
-      type: LoadBalancer
-      http:
+      admin:
         enabled: true
-        servicePort: 8080
-    catchAllRoute:
-      enabled: false
+      deployment:
+        role: "traditional"
+        role_traditional:
+          config_provider: "yaml"
+        standalone:
+          existingConfigMap: ""
     routes:
       - host: data-service.127.0.0.1.nip.io
         uri: "/*"
@@ -154,11 +144,15 @@ odrlAuthorization:
             host: http://localhost:8181
             policy: policy/main
             with_body: true
-      - host: pap.127.0.0.1.nip.io
-        uri: /*
-        upstream:
-          nodes:
-            odrl-pap:8080: 1
+    ingress:
+      enabled: false
+    service:
+      type: LoadBalancer
+      http:
+        enabled: true
+        servicePort: 8080
+    catchAllRoute:
+      enabled: false
     etcd:
       enabled: false
     opa:
@@ -168,8 +162,8 @@ odrlAuthorization:
           maxDelay: 1
       apisix:
         adminService:
-          namespace: odrl-authorization
-          name: odrl-authorization-apisix-admin
+          namespace: iam
+          name: iam-apisix-admin
   odrl-pap:
     database:
       url: jdbc:postgresql://postgres:5432/odrl
