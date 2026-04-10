@@ -1,7 +1,9 @@
 global: {}
 
 # -- vc-authentication sub-chart parameters (https://github.com/FIWARE/vc-authentication)
-vcAuthentication: {}
+vcAuthentication:
+  enabled: true
 
 # -- odrl-authorization sub-chart parameters (https://github.com/fiware/odrl-authorization)
-odrlAuthorization: {}
+odrlAuthorization:
+  enabled: true
