@@ -12,6 +12,5 @@ dependencies:
   - name: odrl-authorization
     alias: odrlAuthorization
     repository: https://fiware.github.io/odrl-authorization/
-    version: 2.1.2
+    version: 2.2.0
     condition: odrlAuthorization.enabled
-
