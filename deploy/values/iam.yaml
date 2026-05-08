@@ -37,8 +37,6 @@ vcAuthentication:
           certificatePath: /certificate/client-chain-bundle.cert.pem
       server:
         host: http://verifier.127.0.0.1.nip.io:8080
-      configRepo:
-        configEndpoint: http://credentials-config-service:8080
       additionalVolumes:
         - name: certificates
           secret:
@@ -71,21 +69,6 @@ vcAuthentication:
             - name: certificates
               mountPath: /root-ca/cacert.pem
               subPath: cacert.pem
-
-  trusted-issuers-list:
-    ingress:
-      tir:
-        enabled: true
-        className: apisix
-        hosts:
-          - host: tir.127.0.0.1.nip.io
-      til:
-        enabled: true
-        className: apisix
-        hosts:
-          - host: til.127.0.0.1.nip.io
-
-  credentials-config-service:
     registration:
       enabled: true
       services:
@@ -102,6 +85,18 @@ vcAuthentication:
                   jwtInclusion:
                     enabled: true
                     fullInclusion: true
+  trusted-issuers-list:
+    ingress:
+      tir:
+        enabled: true
+        className: apisix
+        hosts:
+          - host: tir.127.0.0.1.nip.io
+      til:
+        enabled: true
+        className: apisix
+        hosts:
+          - host: til.127.0.0.1.nip.io
 
 odrlAuthorization:
   apisix:
