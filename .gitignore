@@ -3,6 +3,7 @@
 ##############################
 *.tgz
 charts/decentralized-iam/charts/*
+charts/decentralized-iam/Chart.lock
 
 ##############################
 ## Java
