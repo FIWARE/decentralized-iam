@@ -65,7 +65,8 @@ for chartDir in charts/*/; do
       --head "$branch" \
       --title "chore(deps): bump ${depName} to ${latestVersion} in ${chartName}" \
       --body "Bumps the \`${depName}\` dependency of the \`${chartName}\` chart from \`${depVersion}\` to \`${latestVersion}\`." \
-      --label patch
+      --label patch \
+      --reviewer "$REVIEWERS"
 
     git checkout "$BASE_BRANCH"
   done

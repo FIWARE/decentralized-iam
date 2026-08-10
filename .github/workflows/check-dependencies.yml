@@ -2,6 +2,14 @@ name: Check Chart Dependencies
 
 on:
   workflow_dispatch:
+    inputs:
+      reviewers:
+        description: 'GitHub usernames to request review from'
+        required: true
+        type: choice
+        options:
+          - 'mortega5'
+          - 'vramperez'
   schedule:
     - cron: '0 7 * * 2'
 
@@ -35,4 +43,5 @@ jobs:
       - name: Check dependencies and open PRs
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEWERS: ${{ github.event.inputs.reviewers || 'mortega5,vramperez' }}
         run: ./.github/scripts/check-dependencies.sh
