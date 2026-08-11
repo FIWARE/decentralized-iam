@@ -14,7 +14,7 @@ jobs:
   generate-version:
     name: Generate version
     runs-on: ubuntu-latest
-    
+
     outputs:
       version: ${{ steps.out.outputs.version }}
       plain-version: ${{ steps.out.outputs.plain-version }}
@@ -38,7 +38,7 @@ jobs:
         run: |
           NR=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           echo "nr=$NR" >> $GITHUB_OUTPUT
-        
+
 
       - name: Set version output
         id: out
@@ -46,7 +46,7 @@ jobs:
           echo "version=${VERSION}-PRE-${{ steps.pr_number.outputs.nr }}" >> $GITHUB_OUTPUT
           echo "plain-version=${VERSION}" >> $GITHUB_OUTPUT
 
-          
+
   git-release:
     needs: ["generate-version"]
     runs-on: ubuntu-latest
