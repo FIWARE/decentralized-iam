@@ -78,7 +78,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   prepare-release:
-    needs: ["check-labels", "comment"]
+    needs: ["check-labels"]
 
     runs-on: ubuntu-latest
 
