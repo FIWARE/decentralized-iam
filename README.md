@@ -1,4 +1,4 @@
-# Decentralized IAM (IAM4VC)
+# Decentralized IAM based on Verifiable Credentials (IAM4VC)
 
 [![](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://github.com/FIWARE/catalogue/tree/master/security/README.md)
 
