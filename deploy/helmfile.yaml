@@ -21,6 +21,14 @@ releases:
     command: "kubectl"
     args:
       - "apply"
+      - "--server-side"
+      - "-f"
+      - "./config/namespace.yaml"
+  - events: ["presync"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "apply"
       - "-n"
       - "{{ .Release.Namespace }}"
       - "-f"
@@ -44,6 +52,14 @@ releases:
   values:
     - values/did-helper.yaml
   hooks:
+    - events: ["presync"]
+      showlogs: true
+      command: "kubectl"
+      args:
+        - "apply"
+        - "--server-side"
+        - "-f"
+        - "./config/namespace.yaml"
     - events: ["presync"]
       showlogs: true
       command: "kubectl"
@@ -89,6 +105,14 @@ releases:
   values:
     - values/iam.yaml
   hooks:
+  - events: ["presync"]
+    showlogs: true
+    command: "kubectl"
+    args:
+      - "apply"
+      - "--server-side"
+      - "-f"
+      - "./config/namespace.yaml"
   - events: ["presync"]
     showlogs: true
     command: "kubectl"
