@@ -18,16 +18,16 @@ concurrency:
 
 jobs:
 
-  # Lints the charts and validates what they render, see https://github.com/SEAMWARE/github-workflows
+  # Lints the charts and validates what they render, see https://github.com/FIWARE/github-workflows
   chart-lint:
-    uses: SEAMWARE/github-workflows/.github/workflows/chart-lint.yml@v1
+    uses: FIWARE/github-workflows/.github/workflows/chart-lint.yml@v1
 
   # Requires a semver label and bumps the version of the charts the pull request changes, see
-  # https://github.com/SEAMWARE/github-workflows
+  # https://github.com/FIWARE/github-workflows
   chart-version:
     needs:
       - chart-lint
-    uses: SEAMWARE/github-workflows/.github/workflows/chart-pr.yml@v1
+    uses: FIWARE/github-workflows/.github/workflows/chart-pr.yml@v1
     permissions:
       contents: write
       pull-requests: write
