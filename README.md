@@ -21,6 +21,7 @@ This project is part of [FIWARE](https://www.fiware.org/). For more information 
 
 - [Overview](#overview)
 - [Release Information](#release-information)
+  - [3.0.0 - odrl-authorization v3 / APISIX chart v3 (breaking)](#300---odrl-authorization-v3--apisix-chart-v3-breaking)
 - [Deployment](#deployment)
   - [Local Deployment](#local-deployment)
   - [Deployment with Helm](#deployment-with-helm)
