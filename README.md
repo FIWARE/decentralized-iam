@@ -54,6 +54,15 @@ Thus, being provided as Helm chart, the FIWARE decentralized IAM can be deployed
 The FIWARE decentralized IAM uses a continious integration flow, where every merge to the main-branch triggers a new release. Versioning follows [Semantic Versioning 2.0.0](https://semver.org/lang/de/), therefor only major changes will contain breaking changes.
 Important releases will be listed below, with additional information linked:
 
+### 3.0.0 - odrl-authorization v3 / APISIX chart v3 (breaking)
+
+Bumps the `odrl-authorization` sub-chart to `3.0.0`, which upgrades its bundled APISIX
+sub-chart to chart major `v3`. This IAM chart adds no APISIX configuration of its own, but
+the APISIX change is breaking for consumers that upgrade an existing release in place:
+APISIX chart v3 ships no default Admin API keys and now requires Helm 3.8+. See the
+[odrl-authorization 3.0.0 release note](https://github.com/FIWARE/odrl-authorization#release-information)
+for the migration details.
+
 ## Deployment
 
 > :warning: The `deploy` directory in the repository contains everything necessary to set up the [local deployment](#local-deployment), with all required dependencies ready for use. However, **the `deploy` directory must not be used as is for deployments in real or production environments**.
